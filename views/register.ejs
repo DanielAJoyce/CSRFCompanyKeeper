@@ -1,0 +1,21 @@
+<% include ./partials/header %>
+
+<div class="container">
+  <h1 class="text-center">Sign up to use CompanyKeeper!</h1>
+  <form action="/register" method="POST">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text"  class="form-control" placeholder="username"name="username" required="true"
+      pattern=".{6,}" required title="Must be a minimum of 6 characters">
+      </div>
+    <div  class="form-group">
+      <label for="password">Password</label>
+      <input type="password"  class="form-control" placeholder="password"name="password" required="true" 
+      pattern=".{6,}" required title="Must be a minimum of 6 characters">
+    </div>
+      <input type="hidden" name="_csrf" id="csrf" value="<%=csrfToken%>">
+    <button class="btn-success btn">Register</button>
+  </form>
+</div>
+</div>
+<% include ./partials/footer %>
