@@ -1,19 +1,30 @@
 <% include ../partials/header %>
 
-<h1> index here </h1>
+<h1> Company index here </h1>
+<% if(locals.companies){  %>
+<% companies.forEach(function(company){ %> 
+<div> 
+    <ul>
+    <li>Company Name: <strong><%= company.name%> </strong> </li>
+    <li>Company Phone Number: <strong> <%= company.phonenumber %></strong> <li> 
+    <li>Company Address: <strong><%= company.address %></strong></li>
+    </ul>
+</div> 
+<% }); %>
+
+<% } else { %>
+<p> You have no companies! Try adding one! </p> 
+<% } %> 
 
 
-<p>No Company Addresses have been entered, enter one now!</p>
+
+
+
+
 
 <a class="btn btn-success" href="/company/new">Add Company to address book</a>
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
   Launch demo modal
 </button>
-
-
-<% companies.forEach(function(company){ %>
-<li> <%= company.name %> <%= company.address%> <%= company.phonenumber%></li>
-<% } %>
-
 
 <% include ../partials/footer %>

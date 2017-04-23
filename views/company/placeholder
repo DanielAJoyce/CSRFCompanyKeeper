@@ -1,0 +1,3 @@
+<% if(!company){ %>
+<p>No Company Addresses have been entered, enter one now!</p>
+<% } %>

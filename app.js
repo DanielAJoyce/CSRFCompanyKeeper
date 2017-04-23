@@ -53,9 +53,8 @@ createUserSession = function(req, res, user) {
 //Using a secret for a little bit of added protection. Will use along with CSRF
 app.use(cookieParser(secretCookie));
 app.get("/", function(req,res){
-  console.log("Index session user: " + req.session.user.username);
-
-  res.render("index", {user:req.session.user});
+console.log("Req.user:" + req.user);
+  res.render("index");
 });
 
 app.get('/register', csrfProtection, function(req, res) {
@@ -127,9 +126,20 @@ app.post('/login', parseForm, csrfProtection, function(req, res) {
 });
 
 app.get("/company", middlewareAuth.isLoggedIn, function(req,res){
-  console.log(req.session.username);
-  Company.find({user:{username:req.session.username}});
-  res.render("company/");
+  console.log(req.session.user.username);
+  Company.find({user:{username:req.session.user.username}}, function(err, companies){
+    if(err){
+      console.log(err);
+    }else
+    {
+      console.log("grabbed companies: "+ companies);
+      // if(companies.undefined){
+      //   console.log("yes");
+      //   companies = "";
+      // }
+      res.render("company/index", {companies:companies});
+    }
+   });
 });
 
 app.get("/company/new", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
