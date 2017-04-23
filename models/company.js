@@ -3,7 +3,7 @@ var mongoose=require("mongoose");
 var CompanySchema = mongoose.Schema({
     name:String,
     address:String,
-    phonenumber:Number,
+    phonenumber:String,
     user:{
         id:{
             //This'll allow for a relationship to be made to the database.
@@ -12,8 +12,9 @@ var CompanySchema = mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:"User"
         },
+         username:String
     },
-    username:String
+   
 });
 
 module.exports=mongoose.model("Company",CompanySchema);

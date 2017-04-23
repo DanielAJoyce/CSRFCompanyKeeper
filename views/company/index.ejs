@@ -11,5 +11,9 @@
 </button>
 
 
+<% companies.forEach(function(company){ %>
+<li> <%= company.name %> <%= company.address%> <%= company.phonenumber%></li>
+<% } %>
+
 
 <% include ../partials/footer %>

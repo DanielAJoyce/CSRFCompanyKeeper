@@ -36,10 +36,26 @@ var secretCookie = "Iamasecretshhhh123912-039";
  
 // parse cookies 
 
+
+createUserSession = function(req, res, user) {
+  var cleanUser = {
+    username:  user.username,
+    id: user._id,
+  };
+
+  req.session.user = cleanUser;
+  req.user = cleanUser;
+  res.locals.user = cleanUser;
+  console.log("User session:" +  req.session.user.username);
+};
+
+
 //Using a secret for a little bit of added protection. Will use along with CSRF
 app.use(cookieParser(secretCookie));
 app.get("/", function(req,res){
-  res.render("index");
+  console.log("Index session user: " + req.session.user.username);
+
+  res.render("index", {user:req.session.user});
 });
 
 app.get('/register', csrfProtection, function(req, res) {
@@ -96,10 +112,11 @@ app.post('/login', parseForm, csrfProtection, function(req, res) {
       res.render("login", {csrfToken:req.csrfToken()});
     }else{
       if(bcrypt.compareSync(req.body.password, user.password)){
+        console.log("This is the user: " + user);
         console.log("credentials correct, logging in");
-        middlewareAuth.createUserSession(req,res,user);
+        createUserSession(req,res,user);
         res.redirect("/");
-        console.log(req);
+        //console.log(req);
       }
       else{
         console.log("incorrect password");
@@ -110,11 +127,42 @@ app.post('/login', parseForm, csrfProtection, function(req, res) {
 });
 
 app.get("/company", middlewareAuth.isLoggedIn, function(req,res){
+  console.log(req.session.username);
+  Company.find({user:{username:req.session.username}});
   res.render("company/");
 });
 
 app.get("/company/new", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
   res.render("company/new", {csrfToken:req.csrfToken()});
+});
+
+app.post("/company", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
+    var company = new Company({
+      name: req.body.name,
+      address: req.body.address,
+      phonenumber:req.body.phonenumber,
+      user:{
+        username:req.session.user.username,
+      }
+    });
+    company.save(function(err){
+      if(err){
+        console.log(err);
+        res.redirect("/company/new");
+      }else{
+        console.log("Company entry created for user");
+        res.render("company/");
+      }
+    })
+
+    console.log(req.session.username);
+    res.send("hit post route");
+})
+
+
+app.get("/logout", function(req,res){
+  req.session.reset();
+  res.redirect("/");
 });
 
 app.get("*", function(req,res){

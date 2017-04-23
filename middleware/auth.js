@@ -2,16 +2,6 @@
 
 authObj = {};
 
-authObj.createUserSession = function(req, res, user) {
-  var cleanUser = {
-    username:  user.username,
-  };
-  req.session.user = cleanUser;
-  req.user = cleanUser;
-  res.locals.user = cleanUser;
-  console.log(req.session.user);
-};
-
 authObj.requireLogin = function(req, res, next) {
   if (!req.user) {
     res.redirect('/login');
