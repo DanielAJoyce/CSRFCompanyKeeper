@@ -16,6 +16,7 @@
     "method-override": "~2.3.8",
     "ejs": "~2.5.6",
     "bcrypt": "~1.0.2",
-    "mongoose": "~4.9.5"
+    "mongoose": "~4.9.5",
+    "client-sessions": "~0.8.0"
   }
 }
