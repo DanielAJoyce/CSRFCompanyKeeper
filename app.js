@@ -1,11 +1,18 @@
-var cookieParser = require('cookie-parser')
-var csrf = require('csurf')
-var bodyParser = require('body-parser')
-var express = require('express')
+var cookieParser = require('cookie-parser');
+var csrf = require('csurf');
+var bodyParser = require('body-parser');
+var express = require('express');
+var mongoose = require("mongoose");
 var methodOverride = require("method-override");
-var app = express()
+var User = require("./models/user");
+var Company = require("./models/company");
+var middlewareAuth = require("./middleware/auth");
+var bcrypt = require("bcrypt");
+var app = express();
 
+mongoose.connect("mongodb://localhost/companykeeper");
 
+const saltRounds = 10;
 app.set("view engine","ejs");
 
 app.use(express.static(__dirname + "/public")); //to get static files like stylesheets
@@ -38,15 +45,33 @@ app.post('/register', parseForm, csrfProtection, function(req, res) {
 
   if(req.secret == secretCookie){
     console.log("secret matches");
-    
 
+    var pass = req.body.password;
+    var salt = bcrypt.genSaltSync(saltRounds);
+    var hash = bcrypt.hashSync(pass,salt);
+    console.log("hash: " + hash);
 
+    var user = new User({
+      username:req.body.username,
+      password:hash,
+    });
+
+    user.save(function(err){
+      if(err){
+        console.log("There's been a problem");
+        console.log(err);
+        res.redirect("register");
+      }else
+      {
+        res.redirect("/");
+      }
+      
+    });
   }else{
     console.log("secret was incorrect - redirecting to index");
-    res.redirect("index");
+    res.redirect("/");
   }
-
-    res.send('data is being processed')
+    //res.send('data is being processed')
 });
 
 
