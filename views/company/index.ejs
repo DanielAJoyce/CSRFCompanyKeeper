@@ -3,11 +3,13 @@
 <h1> Company index here </h1>
 <% if(locals.companies){  %>
 <% companies.forEach(function(company){ %> 
-<div> 
+<div class="container company"> 
     <ul>
     <li>Company Name: <strong><%= company.name%> </strong> </li>
     <li>Company Phone Number: <strong> <%= company.phonenumber %></strong> <li> 
     <li>Company Address: <strong><%= company.address %></strong></li>
+    <li><a href="company/edit/<%company.id%>" class="btn btn-warning">Edit</a></li>
+    <li><a href="company/delete/<%company.id%>" class="btn btn-danger">Delete</a>
     </ul>
 </div> 
 <% }); %>
