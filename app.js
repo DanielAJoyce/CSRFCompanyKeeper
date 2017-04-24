@@ -3,6 +3,7 @@ var csrf = require('csurf');
 var bodyParser = require('body-parser');
 var express = require('express');
 var mongoose = require("mongoose");
+var ObjectId = require("mongodb").ObjectId;
 var methodOverride = require("method-override");
 var User = require("./models/user");
 var Company = require("./models/company");
@@ -126,8 +127,15 @@ app.post('/login', parseForm, csrfProtection, function(req, res) {
 });
 
 app.get("/company", middlewareAuth.isLoggedIn, function(req,res){
-  console.log(req.session.user.username);
-  Company.find({user:{username:req.session.user.username}}, function(err, companies){
+  var id = req.session.user.id;
+  var o_id = new ObjectId(id);
+  console.log("o_id: " + o_id);
+
+  console.log("User: " + req.session.user.username);
+  Company.find({user:{id:o_id}, user:{username:req.session.user.username}}, function(err, companies){
+    //Company.find({user:{id:o_id}, user:{username:req.session.user.username}}, function(err, companies){
+    //Company.find({user:{username:req.session.user.username}}, function(err, companies){
+      //}, {user:{username:req.session.user.username}
     if(err){
       console.log(err);
     }else
@@ -142,16 +150,15 @@ app.get("/company", middlewareAuth.isLoggedIn, function(req,res){
    });
 });
 
-app.get("/company/new", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
-  res.render("company/new", {csrfToken:req.csrfToken()});
-});
 
 app.post("/company", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
+    console.log("user id: " + req.session.user.id);
     var company = new Company({
       name: req.body.name,
       address: req.body.address,
       phonenumber:req.body.phonenumber,
       user:{
+      //  id:req.session.user.id,
         username:req.session.user.username,
       }
     });
@@ -161,13 +168,27 @@ app.post("/company", middlewareAuth.isLoggedIn, parseForm, csrfProtection, funct
         res.redirect("/company/new");
       }else{
         console.log("Company entry created for user");
-        res.render("company/");
+
+        res.redirect("/company");
       }
     })
 
     console.log(req.session.username);
-    res.send("hit post route");
-})
+    //res.send("hit post route");
+});
+
+app.get("/company/new", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
+  res.render("company/new", {csrfToken:req.csrfToken()});
+});
+
+app.get("/company/:id/edit", middlewareAuth.isLoggedIn, parseForm,csrfProtection, function(req,res){
+  console.log("req user creds:" + req.session.user._id + " " + req.session.user._id);
+  res.send("You hit the PUT route");
+  //Company.find({user:{username:req.session.user.username}}, function(err, companies){
+
+
+  //res.render("/company/edit", {csrfToken:req.csrfToken()});
+});
 
 
 app.get("/logout", function(req,res){
