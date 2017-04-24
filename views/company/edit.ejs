@@ -4,9 +4,9 @@
 <div class="container">
   <h1 class="text-center">Edit Company: <%= company.name %> </h1>
 
-  
+
     <p> Below, you can edit the details of <%= company.name %> </p>  
-  <form action="/company" method="POST">
+  <form action="/company/<%=company.id%>?_method=PUT" method="POST">
     <div class="form-group">
       <label for="name">Company Name</label>
       <input type="text"  class="form-control" value="<%=company.name %>"name="name" required="true">

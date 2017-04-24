@@ -207,6 +207,14 @@ app.get("/company/:id/edit", middlewareAuth.isLoggedIn, parseForm,csrfProtection
   //res.render("/company/edit", {csrfToken:req.csrfToken()});
 });
 
+app.put("/company/:id", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
+  console.log(req.body.name);
+  console.log(req.body.phonenumber);
+  console.log(req.body.address);
+  
+  res.send("You hit the PUT route");
+});
+
 app.get("/company/:id/delete", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
   res.send("You hit the route");
 })
