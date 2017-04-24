@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var mongoose = require("mongoose");
 var ObjectId = require("mongodb").ObjectId;
+var ObjId = require("mongoose").Types.ObjectId;
 var methodOverride = require("method-override");
 var User = require("./models/user");
 var Company = require("./models/company");
@@ -115,7 +116,7 @@ app.post('/login', parseForm, csrfProtection, function(req, res) {
         console.log("This is the user: " + user);
         console.log("credentials correct, logging in");
         createUserSession(req,res,user);
-        res.redirect("/");
+        res.redirect("/company");
         //console.log(req);
       }
       else{
@@ -153,12 +154,13 @@ app.get("/company", middlewareAuth.isLoggedIn, function(req,res){
 
 app.post("/company", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
     console.log("user id: " + req.session.user.id);
+
     var company = new Company({
       name: req.body.name,
       address: req.body.address,
       phonenumber:req.body.phonenumber,
       user:{
-      //  id:req.session.user.id,
+        //id:req.session.user.id,
         username:req.session.user.username,
       }
     });
@@ -183,13 +185,31 @@ app.get("/company/new", middlewareAuth.isLoggedIn, parseForm, csrfProtection, fu
 
 app.get("/company/:id/edit", middlewareAuth.isLoggedIn, parseForm,csrfProtection, function(req,res){
   console.log("req user creds:" + req.session.user._id + " " + req.session.user._id);
-  res.send("You hit the PUT route");
+ console.log("id of Company: " + req.params.id);
+ var compObjId = new ObjId(req.params.id);
+
+  Company.findOne({_id:compObjId}, function(err,company){
+    //Company.find({_id:"Objectid"(req.params.id)}, function(err,company){
+    if(err){
+      console.log(err);
+    }else{
+      console.log("company data: " + company);
+      console.log("company name: " + company.name);
+      res.render("company/edit", {company:company, csrfToken:req.csrfToken()});
+    }
+  });
+
+
+  //res.send("You hit the PUT route");
   //Company.find({user:{username:req.session.user.username}}, function(err, companies){
 
 
   //res.render("/company/edit", {csrfToken:req.csrfToken()});
 });
 
+app.get("/company/:id/delete", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
+  res.send("You hit the route");
+})
 
 app.get("/logout", function(req,res){
   req.session.reset();
