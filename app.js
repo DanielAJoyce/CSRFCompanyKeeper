@@ -128,24 +128,16 @@ app.post('/login', parseForm, csrfProtection, function(req, res) {
 });
 
 app.get("/company", middlewareAuth.isLoggedIn, function(req,res){
-  var id = req.session.user.id;
-  var o_id = new ObjectId(id);
-  console.log("o_id: " + o_id);
-
   console.log("User: " + req.session.user.username);
-  Company.find({user:{id:o_id}, user:{username:req.session.user.username}}, function(err, companies){
-    //Company.find({user:{id:o_id}, user:{username:req.session.user.username}}, function(err, companies){
-    //Company.find({user:{username:req.session.user.username}}, function(err, companies){
-      //}, {user:{username:req.session.user.username}
+
+  //Company.find({user:{id:o_id}, user:{username:req.session.user.username}}, function(err, companies){
+    Company.find().where('user.id').equals(req.session.user.id).exec(function(err, companies){
     if(err){
       console.log(err);
     }else
     {
       console.log("grabbed companies: "+ companies);
-      // if(companies.undefined){
-      //   console.log("yes");
-      //   companies = "";
-      // }
+
       res.render("company/index", {companies:companies});
     }
    });
@@ -160,7 +152,7 @@ app.post("/company", middlewareAuth.isLoggedIn, parseForm, csrfProtection, funct
       address: req.body.address,
       phonenumber:req.body.phonenumber,
       user:{
-        //id:req.session.user.id,
+        id:req.session.user.id,
         username:req.session.user.username,
       }
     });

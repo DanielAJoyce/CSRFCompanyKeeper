@@ -1,22 +1,22 @@
 <% include ./partials/header %>
 
 <div class="container text-center"> 
-<h1>index page here </h1>
+<h1>Welcome to CompanyKeeper!</h1>
 
 
-<a href="/company" class="btn btn-primary"> Proceed to see companies</a>
+<a href="/company" class="btn btn-primary btn-lg">Company Address Book</a><br/>
 
+<%= JSON.stringify(session.id) %> 
 
-<% if(typeof session.id == 'undefined') { %>
-
-<a href="register" class="btn btn-success" >register here </a>
-<a href="login" class="btn btn-info"> Login</a>
+<% if(JSON.stringify(session) == "{}") { %>
+<div style="margin-top:10px">
+<a href="register" class="btn btn-success btn-lg" >Register</a>
+<a href="login" class="btn btn-info btn-lg">Login</a>
 <%  }else {  %>
-
-<a href="/logout" class="btn btn-danger">logout</a> 
+<a href="/logout" class="btn btn-danger btn-lg">logout</a> 
 <% } %>
 </div> 
-
+</div>
 
 <% include ./partials/footer %>
 
