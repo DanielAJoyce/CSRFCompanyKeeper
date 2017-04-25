@@ -8,8 +8,11 @@
     <li>Company Name: <strong><%= company.name%> </strong> </li>
     <li>Company Phone Number: <strong> <%= company.phonenumber %></strong> <li> 
     <li>Company Address: <strong><%= company.address %></strong></li>
-    <li><a href="company/<%=company.id%>/edit/" class="btn btn-warning">Edit</a></li>
-    <li><a href="company/<%=company.id%>/delete/" class="btn btn-danger">Delete</a>
+    <br/> 
+    <li><a href="company/<%=company.id%>/edit/" class="editBtn btn btn-warning">Edit</a></li>
+    <li><form id="deleteForm" action="/company/<%=company.id%>?_method=DELETE" method="POST">
+    <button class="btn btn-danger">Delete</button> 
+    </form> </li>
     </ul>
 </div> 
 <% }); %>

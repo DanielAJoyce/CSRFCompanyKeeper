@@ -17,11 +17,20 @@ form{
 li{
     color:white;
     list-style: none;
-    display:inline;
+    display:inline-block;
 }
 
 .company{
     background-color:gray;
     border-radius:8px;
     border:1px solid white;
+}
+
+#deleteForm{
+    display:inline;
+}
+
+.editBtn{
+  
+    margin-left:10px;
 }

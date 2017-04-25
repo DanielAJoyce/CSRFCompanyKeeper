@@ -51,6 +51,12 @@ createUserSession = function(req, res, user) {
   console.log("User session:" +  req.session.user.username);
 };
 
+app.configure(function(){
+  app.use(function(req,res,next){
+      res.locals.user = req.session.user;
+      next();
+  });
+});
 
 //Using a secret for a little bit of added protection. Will use along with CSRF
 app.use(cookieParser(secretCookie));
@@ -184,7 +190,7 @@ app.get("/company/new", middlewareAuth.isLoggedIn, parseForm, csrfProtection, fu
   res.render("company/new", {csrfToken:req.csrfToken()});
 });
 
-app.get("/company/:id/edit", middlewareAuth.isLoggedIn, parseForm,csrfProtection, function(req,res){
+app.get("/company/:id/edit", middlewareAuth.isLoggedIn, middlewareAuth.isOwner, parseForm,csrfProtection, function(req,res){
   console.log("req user creds:" + req.session.user._id + " " + req.session.user._id);
  console.log("id of Company: " + req.params.id);
  var compObjId = new ObjId(req.params.id);
@@ -236,10 +242,17 @@ app.put("/company/:id", middlewareAuth.isLoggedIn, parseForm, csrfProtection, fu
   //res.send("You hit the PUT route");
 });
 
-app.delete("/company/:id", middlewareAuth.isLoggedIn,function(req,res){
-  
-  
-  res.send("You hit the delete route");
+app.delete("/company/:id", middlewareAuth.isLoggedIn, middlewareAuth.isOwner, function(req,res){
+  Company.findByIdAndRemove(req.params.id, function(err){
+    if(err){
+      console.log("Couldn't delete company");
+      res.redirect("/company");
+    }else{
+      console.log("Company deleted!");
+      res.redirect("/company");
+    }
+  })
+ // res.send("You hit the delete route");
 });
 
 
