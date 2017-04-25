@@ -1,10 +1,22 @@
 <% include ./partials/header %>
 
+<div class="container text-center"> 
 <h1>index page here </h1>
 
-<a href="register" class="btn btn-success" >register here </a>
+
 <a href="/company" class="btn btn-primary"> Proceed to see companies</a>
+
+
+<% if(typeof session.id == 'undefined') { %>
+
+<a href="register" class="btn btn-success" >register here </a>
+<a href="login" class="btn btn-info"> Login</a>
+<%  }else {  %>
+
 <a href="/logout" class="btn btn-danger">logout</a> 
+<% } %>
+</div> 
+
 
 <% include ./partials/footer %>
 

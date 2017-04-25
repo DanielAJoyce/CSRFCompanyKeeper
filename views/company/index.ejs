@@ -1,14 +1,14 @@
 <% include ../partials/header %>
 
-<h1> Company index here </h1>
+<h1 class="text-center"> Company index here </h1>
 <% if(locals.companies){  %>
 <% companies.forEach(function(company){ %> 
 <div class="container company"> 
     <ul>
-    <li>Company Name: <strong><%= company.name%> </strong> </li>
-    <li>Company Phone Number: <strong> <%= company.phonenumber %></strong> <li> 
+    <li>Company Name: <strong><%= company.name %> </strong> </li><br/>
+    <li>Company Phone Number: <strong> <%= company.phonenumber %></strong></li><br/>
     <li>Company Address: <strong><%= company.address %></strong></li>
-    <br/> 
+    <br/>
     <li><a href="company/<%=company.id%>/edit/" class="editBtn btn btn-warning">Edit</a></li>
     <li><form id="deleteForm" action="/company/<%=company.id%>?_method=DELETE" method="POST">
     <button class="btn btn-danger">Delete</button> 
@@ -26,8 +26,8 @@
 
 
 
-
+<div class="btnControls">
 <a class="btn btn-success" href="/company/new">Add Company to address book</a>
-
-
+<a href="/logout" class="btn btn-danger">logout</a> 
+</div>
 <% include ../partials/footer %>

@@ -51,19 +51,13 @@ createUserSession = function(req, res, user) {
   console.log("User session:" +  req.session.user.username);
 };
 
-app.configure(function(){
-  app.use(function(req,res,next){
-      res.locals.user = req.session.user;
-      next();
-  });
-});
-
 //Using a secret for a little bit of added protection. Will use along with CSRF
 app.use(cookieParser(secretCookie));
 app.get("/", function(req,res){
 console.log("Req.user:" + req.user);
-  res.render("index");
+  res.render("index", {session:req.session});
 });
+
 
 app.get('/register', csrfProtection, function(req, res) {
   // pass the csrfToken to the view 
