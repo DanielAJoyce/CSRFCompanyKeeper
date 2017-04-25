@@ -164,6 +164,7 @@ app.post("/company", middlewareAuth.isLoggedIn, parseForm, csrfProtection, funct
         username:req.session.user.username,
       }
     });
+
     company.save(function(err){
       if(err){
         console.log(err);
@@ -208,16 +209,39 @@ app.get("/company/:id/edit", middlewareAuth.isLoggedIn, parseForm,csrfProtection
 });
 
 app.put("/company/:id", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
+  //console.log("req.body.company.name: " + req.body.company);
+  //console.log("req.body.company: " + req.body.company);
+  //console.log("req.params.id: " + req.params.id);
+
+  var dataToInsert = {
+    name: req.body.name,
+    phonenumber: req.body.phonenumber,
+    address:req.body.address,
+  };
   console.log(req.body.name);
   console.log(req.body.phonenumber);
   console.log(req.body.address);
-  
-  res.send("You hit the PUT route");
+
+  Company.findByIdAndUpdate(req.params.id, dataToInsert, function(err,updatedCompany){
+    if(err){
+       console.log("Something went wrong");
+      res.redirect("/company/"+req.params.id+"/edit");
+      
+    }else{
+      console.log("company edited");
+     res.redirect("/company");
+    }
+  });
+
+  //res.send("You hit the PUT route");
 });
 
-app.get("/company/:id/delete", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
-  res.send("You hit the route");
-})
+app.delete("/company/:id", middlewareAuth.isLoggedIn,function(req,res){
+  
+  
+  res.send("You hit the delete route");
+});
+
 
 app.get("/logout", function(req,res){
   req.session.reset();
