@@ -6,8 +6,8 @@
 <div class="container company"> 
     <ul>
     <li>Company Name: <strong><%= company.name %> </strong> </li><br/>
-    <li>Company Phone Number: <strong> <%= company.phonenumber %></strong></li><br/>
-    <li>Company Address: <strong><%= company.address %></strong></li>
+    <li>Company Address: <strong> <%= company.address %></strong></li><br/>
+    <li>Company Phone Number: <strong><%= company.phonenumber %></strong></li>
     <br/>
     <li><a href="company/<%=company.id%>/edit/" class="editBtn btn btn-warning">Edit</a></li>
     <li><form id="deleteForm" action="/company/<%=company.id%>?_method=DELETE" method="POST">
@@ -20,11 +20,6 @@
 <% } else { %>
 <p> You have no companies! Try adding one! </p> 
 <% } %> 
-
-
-
-
-
 
 <div class="btnControls">
 <a class="btn btn-success" href="/company/new">Add Company to address book</a>
