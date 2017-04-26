@@ -4,8 +4,7 @@
 <div class="container">
   <h1 class="text-center">Edit Company: <%= company.name %> </h1>
 
-
-    <p> Below, you can edit the details of <%= company.name %> </p>  
+    <p class="text-center"> Below, you can edit the details of <%= company.name %> </p>  
   <form action="/company/<%=company.id%>?_method=PUT" method="POST">
     <div class="form-group">
       <label for="name">Company Name</label>
@@ -20,10 +19,11 @@
       <input type="text"  class="form-control" value="<%=company.phonenumber %>"name="phonenumber" required="true">
     </div>
       <input type="hidden" name="_csrf" id="csrf" value="<%=csrfToken%>">
+      <a href="/company" class="btn btn-danger" >Back To Address Book</a>
     <button class="btn-success btn">Confirm</button>
   </form>
 
-  <a href="/company">Go back to address book</a>
+  
 </div>
 </div>
 

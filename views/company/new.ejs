@@ -2,7 +2,7 @@
 <% include ../partials/header %>
 
 <div class="container">
-  <h1 class="text-center">Add a Company Address to Address Book!</h1>
+  <h1 class="text-center">Add a Company to Address Book!</h1>
 
   <form action="/company" method="POST">
     <div class="form-group">
@@ -18,10 +18,9 @@
       <input type="text"  class="form-control" placeholder="Phone number"name="phonenumber" required="true">
     </div>
       <input type="hidden" name="_csrf" id="csrf" value="<%=csrfToken%>">
+      <a href="/company" class="btn btn-danger" >Back To Address Book</a>
     <button class="btn-success btn">Register</button>
   </form>
-
-  <a href="/company">Go back to address book</a>
 </div>
 </div>
 
