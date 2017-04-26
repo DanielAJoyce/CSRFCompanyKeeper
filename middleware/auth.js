@@ -4,13 +4,16 @@ var Company = require("../models/company");
 
 authObj = {};
 
-authObj.requireLogin = function(req, res, next) {
-  if (!req.user) {
-    res.redirect('/login');
-  } else {
-    next();
-  }
-};
+
+//Checks if there's a current user and if not, takes them to login page.
+// authObj.requireLogin = function(req, res, next) {
+//   if (!req.user) {
+//     res.redirect('/login');
+//   } else {
+//     next();
+//   }
+// };
+
 
 authObj.isLoggedIn = function(req,res,next){
     //This'll check the person is logged in.
@@ -20,9 +23,8 @@ authObj.isLoggedIn = function(req,res,next){
   res.redirect("/login");
 };
 
-
+//Checks to see if it's the owner. If not, returns to index
 authObj.isOwner = function(req,res,next){
-
 if(req.session.user){
     Company.findById(req.params.id, function(err, foundCompany){
       if(err){
@@ -42,7 +44,5 @@ if(req.session.user){
     })
   }
 };
-
-
 
 module.exports = authObj;

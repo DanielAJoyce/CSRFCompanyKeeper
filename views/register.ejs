@@ -14,8 +14,10 @@
       pattern=".{6,}" required title="Must be a minimum of 6 characters">
     </div>
       <input type="hidden" name="_csrf" id="csrf" value="<%=csrfToken%>">
+      <a href="/" class="btn btn-danger" >Back to main page</a>
     <button class="btn-success btn">Register</button>
   </form>
+ <a href="/login" class="btn btn-info goToOtherForm" >Click here to go to login page</a>
 </div>
 </div>
 <% include ./partials/footer %>
