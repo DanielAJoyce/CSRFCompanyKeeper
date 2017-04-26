@@ -9,11 +9,12 @@ var express = require("express"),
   parseForm = bodyParser.urlencoded({ extended: false });
 
 
+//Index Get route
 router.get("/", function(req,res){
-console.log("Req.user:" + req.user);
   res.render("index", {session:req.session});
 });
 
+//gets the register page(NEW route)
 router.get('/register', csrfProtection, function(req, res) {
   // pass the csrfToken to the view 
   res.render('register', { csrfToken: req.csrfToken() })
