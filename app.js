@@ -21,8 +21,7 @@ var indexRoutes = require("./routes/index");
 //database connection string 
 mongoose.connect("mongodb://localhost/companykeeper");
 
-//
-const saltRounds = 10;
+
 
 //View engine is EJS. Has Ruby-esque syntax on view pages.
 app.set("view engine","ejs");

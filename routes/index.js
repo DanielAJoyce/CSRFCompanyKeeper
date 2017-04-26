@@ -8,7 +8,8 @@ var express = require("express"),
   csrfProtection = csrf({ cookie: true }),
   parseForm = bodyParser.urlencoded({ extended: false });
 
-
+var secretCookie = "Iamasecretshhhh123912-039";
+const saltRounds = 10;
 //Index Get route
 router.get("/", function(req,res){
   res.render("index", {session:req.session});
