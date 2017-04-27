@@ -4,10 +4,12 @@ var express = require("express"),
   csrf = require("csurf"),
   middlewareAuth = require("../middleware/auth"),
   bodyParser = require("body-parser"),
+  mongoSanitize = require("mongo-sanitize"),
   bcrypt = require("bcrypt"),
+  sanitizeHtml = require("sanitize-html"),
   csrfProtection = csrf({ cookie: true }),
   parseForm = bodyParser.urlencoded({ extended: false });
-
+  
 var secretCookie = "Iamasecretshhhh123912-039";
 const saltRounds = 10;
 //Index Get route
@@ -25,14 +27,18 @@ router.post('/register', parseForm, csrfProtection, function(req, res) {
   if(req.secret == secretCookie){
     console.log("secret matches");
 
+    //Cleans username and password of mongo and HTML elements.
+    var cleanUser = middlewareAuth.cleanUser(req.body.username, req.body.password);
+
+    console.log(cleanUser.username + cleanUser.password);
     //generating and storing hash
-    var pass = req.body.password;
+    var pass = cleanUser.password;
     var salt = bcrypt.genSaltSync(saltRounds);
     var hash = bcrypt.hashSync(pass,salt);
 
     //creation of user object 
     var user = new User({
-      username:req.body.username,
+      username:cleanUser.username,
       password:hash,
     });
     //stores user in database.
@@ -65,12 +71,16 @@ router.get('/login', csrfProtection, function(req, res) {
 / Creates user session and re-directs to company page with successful login
 */
 router.post('/login', parseForm, csrfProtection, function(req, res) {
-  User.findOne({username:req.body.username},function(err, user){
+
+  //Cleans username and password of mongo and HTML elements.
+  var cleanUser = middlewareAuth.cleanUser(req.body.username, req.body.password);
+
+  User.findOne({username:cleanUser.username},function(err, user){
     if(!user){
       console.log("no user of this login");
       res.render("login", {csrfToken:req.csrfToken()});
     }else{
-      if(bcrypt.compareSync(req.body.password, user.password)){
+      if(bcrypt.compareSync(cleanUser.password, user.password)){
         console.log("This is the user: " + user);
         console.log("credentials correct, logging in");
         createUserSession(req,res,user);

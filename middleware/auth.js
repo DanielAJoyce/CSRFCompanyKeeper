@@ -1,6 +1,7 @@
 var User = require("../models/user");
 var Company = require("../models/company");
-
+var mongoSanitize = require("mongo-sanitize");
+var sanitizeHtml = require("sanitize-html");
 
 authObj = {};
 
@@ -44,5 +45,46 @@ if(req.session.user){
     })
   }
 };
+
+authObj.cleanCompany = function(name,address,phonenumber){
+
+  // remove HTML tags from the input from the page.
+    var cleanName = sanitizeHtml(name);
+    var cleanAddress = sanitizeHtml(address);
+    var cleanPhonenumber = sanitizeHtml(phonenumber);
+
+    // MongoSantize checks for $ and then uses Javascript escape()
+    // This typically helps prevent basic NoSQL injections 
+    cleanName = mongoSanitize(cleanName);
+    cleanAddress = mongoSanitize(cleanAddress);
+    cleanPhonenumber = mongoSanitize(cleanPhonenumber);
+
+    var cleanObj={
+      name : cleanName,
+      address : cleanAddress,
+      phonenumber : cleanPhonenumber,
+    }
+
+  return cleanObj; 
+}
+
+authObj.cleanUser = function(username,password){
+
+  // remove HTML tags from the input from the page.
+  var cleanUser = sanitizeHtml(username);
+  var cleanPass = sanitizeHtml(password);
+
+   // MongoSantize checks for $ and then uses Javascript escape()
+  // This typically helps prevent basic NoSQL injections 
+  cleanUser = mongoSanitize(cleanUser);
+  cleanPass = mongoSanitize(cleanPass);
+
+  var cleanUserObj ={
+    username: cleanUser,
+    password: cleanPass,
+  };
+
+  return cleanUserObj; 
+}
 
 module.exports = authObj;

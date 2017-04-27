@@ -3,6 +3,8 @@ var express = require("express"),
   User = require("../models/user"),
   Company = require("../models/company"),
   csrf = require("csurf"),
+  mongoSanitize = require("mongo-sanitize"),
+  sanitizeHtml = require("sanitize-html"),
   middlewareAuth = require("../middleware/auth"),
   bodyParser = require("body-parser"),
   bcrypt = require("bcrypt");
@@ -34,11 +36,18 @@ router.get("/", middlewareAuth.isLoggedIn, function(req,res){
 router.post("/", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
     console.log("user id: " + req.session.user.id);
 
+    //Middleware that does both HTML and Mongo sanitization.
+    //Strips out HTML and malicious NoSQL tags.
+    var cleanObj = middlewareAuth.cleanCompany(req.body.name, req.body.address, req.body.phonenumber);
+    console.log(cleanObj.name + cleanObj.address + cleanObj.phonenumber);
+
     //Create new Company object to save to database.
     var company = new Company({
-      name: req.body.name,
-      address: req.body.address,
-      phonenumber:req.body.phonenumber,
+      name: cleanObj.name,
+      address: cleanObj.address,
+      phonenumber:cleanObj.phonenumber,
+
+
       user:{
         id:req.session.user.id,
         username:req.session.user.username,
@@ -54,7 +63,7 @@ router.post("/", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(
         res.redirect("/company");
       }
     })
-    console.log(req.session.username);
+   
 });
 
 //New Company GET route
@@ -68,8 +77,7 @@ router.get("/:id/edit", middlewareAuth.isLoggedIn, middlewareAuth.isOwner, parse
     if(err){
       console.log(err);
     }else{
-      // console.log("company data: " + company);
-      // console.log("company name: " + company.name);
+    
       res.render("company/edit", {company:company, csrfToken:req.csrfToken()});
     }
   });
@@ -77,15 +85,19 @@ router.get("/:id/edit", middlewareAuth.isLoggedIn, middlewareAuth.isOwner, parse
 
 router.put("/:id", middlewareAuth.isLoggedIn, parseForm, csrfProtection, function(req,res){
 
-  var dataToInsert = {
-    name: req.body.name,
-    phonenumber: req.body.phonenumber,
-    address:req.body.address,
-  };
 
-  // console.log(req.body.name);
-  // console.log(req.body.phonenumber);
-  // console.log(req.body.address);
+//Middleware that does both HTML and Mongo sanitization.
+    //Strips out HTML and malicious NoSQL tags.
+  var cleanObj = middlewareAuth.cleanCompany(req.body.name, req.body.address, req.body.phonenumber);
+    console.log(cleanObj.name + cleanObj.address + cleanObj.phonenumber);
+
+  // Creation of object and mapping data to it can be a safe method 
+  // to defend against NoSQL injection.
+  var dataToInsert = {
+    name: cleanObj.name,
+    phonenumber: cleanObj.address,
+    address:cleanObj.phonenumber,
+  };
 
   Company.findByIdAndUpdate(req.params.id, dataToInsert, function(err,updatedCompany){
     if(err){
